@@ -27,14 +27,14 @@ class ArgumentParser(_ArgumentParser):
     """
 
     def __init__(self, **kwargs):
-        super(ArgumentParser, self).__init__(**kwargs)
         self._metadata_strs = []
+        super().__init__(**kwargs)
 
     def add_argument(self, metamsg="{}", **kwargs):
         self._metadata_strs.append(metamsg)
-        super(ArgumentParser, self).add_argument(**kwargs)
+        return super().add_argument(**kwargs)
 
     def add_argument_group(self, metamsg="{}", **kwargs):
         self._metadata_strs.append(metamsg)
-        super(ArgumentParser, self).add_argument_group(**kwargs)
+        return super().add_argument_group(**kwargs)
 
