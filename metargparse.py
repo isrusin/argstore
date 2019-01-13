@@ -1,6 +1,6 @@
 """Command-line parsing module with support of metadata dumping
 
-This is argparse extension for dumping of execution options
+This is argparse wrapping for dumping of execution options
 and argument values to the output files.
 """
 
@@ -18,23 +18,23 @@ from argparse import (Action, ArgumentDefaultsHelpFormatter,
 )
 
 
-class ArgumentParser(_ArgumentParser):
+class ArgumentParser(object):
     """Argument parser class.
 
-    Replacement (and extension) of the argparse.ArgumentParser class
-    that stores additional info during argument specification to format
-    the output metadata.
+    Replacement of the argparse.ArgumentParser that wraps the class and
+    stores additional info during argument specification to format the
+    output metadata.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         self._metadata_strs = []
-        super().__init__(**kwargs)
+        self.parser = _ArgumentParser(*args, **kwargs)
 
-    def add_argument(self, metamsg="{}", **kwargs):
+    def add_argument(self, *args, metamsg="{}", **kwargs):
         self._metadata_strs.append(metamsg)
-        return super().add_argument(**kwargs)
+        return self.parser.add_argument(*args, **kwargs)
 
-    def add_argument_group(self, metamsg="{}", **kwargs):
+    def add_argument_group(self, *args, metamsg="{}", **kwargs):
         self._metadata_strs.append(metamsg)
-        return super().add_argument_group(**kwargs)
+        return self.parser.add_argument_group(*args, **kwargs)
 
