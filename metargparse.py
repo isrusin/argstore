@@ -38,3 +38,6 @@ class ArgumentParser(object):
         self._metadata_strs.append(metamsg)
         return self.parser.add_argument_group(*args, **kwargs)
 
+    def parse_args(self, *args, **kwargs):
+        return self.parser(*args, **kwargs)
+
