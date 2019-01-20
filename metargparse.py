@@ -26,16 +26,25 @@ class ArgumentParser(object):
     output metadata.
     """
 
-    def __init__(self, *args, **kwargs):
-        self._metadata_strs = []
+    def __init__(self, *args, metatitle=None, metadesc=None, **kwargs):
         self.parser = _ArgumentParser(*args, **kwargs)
+        self._meta_strs = []
+        if metatitle is None:
+            metatitle = "### %s\n" % (self.parser.prog or sys.argv[0])
+        self._meta_strs.append(metatitle)
+        if metadesc is None:
+            metadesc = "\n"
+        self._meta_strs.append(metadesc)
 
-    def add_argument(self, *args, metamsg="{}", **kwargs):
-        self._metadata_strs.append(metamsg)
-        return self.parser.add_argument(*args, **kwargs)
+    def add_argument(self, *args, metamsg=None, **kwargs):
+        _argument = self.parser.add_argument(*args, **kwargs)
+        if metamsg is None:
+            metamsg = " {%s}" % _argument.dest
+        self._meta_strs.append(metamsg)
+        return _argument
 
     def add_argument_group(self, *args, metamsg="{}", **kwargs):
-        self._metadata_strs.append(metamsg)
+        self._meta_strs.append(metamsg)
         return self.parser.add_argument_group(*args, **kwargs)
 
     def parse_args(self, *args, **kwargs):
