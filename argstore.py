@@ -59,9 +59,9 @@ class ArgumentContainerWrapper(object):
             if meta_name is None:
                 meta_name = _group.title or ""
             meta_title = "\n --- %s ---\n" % meta_name
-        group = ArgumentContainerWrapper(
+        group = ArgumentGroup(
             _group, meta_tag=meta_tag, meta_title=meta_title,
-            meta_desc=(meta_desc or ""), meta_epilog=(meta_epilog or "")
+            meta_desc=meta_desc, meta_epilog=meta_epilog
         )
         self.meta_groups.append(group)
         return group
@@ -112,4 +112,10 @@ class ArgumentParser(ArgumentContainerWrapper):
         args = self.subj.parse_args(argv, namespace)
         self.metadata = template.format(**vars(args))
         return args
+
+
+class ArgumentGroup(ArgumentContainerWrapper):
+
+    meta_desc = ""
+    meta_epilog = ""
 
