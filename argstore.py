@@ -43,6 +43,9 @@ class ArgumentContainerWrapper(object):
         self._updattr("meta_groups", meta_groups, [])
         self._updattr("meta_formatters", meta_formatters, {})
 
+    def __getattr__(self, name):
+        return self.subj.__getattribute__(name)
+
     def add_argument(self, *args, meta_name=None, meta_str=None,
                      meta_formatter=None, **kwargs):
         _argument = self.subj.add_argument(*args, **kwargs)
@@ -136,13 +139,6 @@ class ArgumentParser(ArgumentContainerWrapper):
             subj, meta_tag=meta_tag, meta_title=meta_title,
             meta_desc=meta_desc, meta_epilog=meta_epilog
         )
-
-    def parse_args(self, argv=None, namespace=None):
-        template = self.prepare_template()
-        args = self.subj.parse_args(argv, namespace)
-        values = self.prepare_values(args)
-        self.metadata = template.format(**values)
-        return args
 
 
 class ArgumentGroup(ArgumentContainerWrapper):
