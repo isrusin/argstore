@@ -29,10 +29,11 @@ class ArgumentContainerWrapper(object):
     meta_epilog = "\n"
     meta_args = None
     meta_groups = None
+    meta_formatters = None
 
     def __init__(self, subj, meta_tag=None, meta_title=None,
                  meta_desc=None, meta_epilog=None, meta_args=None,
-                 meta_groups=None):
+                 meta_groups=None, meta_formatters=None):
         self.subj = subj
         self._updattr("meta_tag", meta_tag)
         self._updattr("meta_title", meta_title)
@@ -40,14 +41,17 @@ class ArgumentContainerWrapper(object):
         self._updattr("meta_epilog", meta_epilog)
         self._updattr("meta_args", meta_args, [])
         self._updattr("meta_groups", meta_groups, [])
+        self._updattr("meta_formatters", meta_formatters, {})
 
     def add_argument(self, *args, meta_name=None, meta_str=None,
-                     **kwargs):
+                     meta_formatter=None, **kwargs):
         _argument = self.subj.add_argument(*args, **kwargs)
+        arg_dest = _argument.dest
+        self.meta_formatters[arg_dest] = meta_formatter
         if meta_str is None:
             if meta_name is None:
-                meta_name = _argument.dest
-            meta_str = " %s: {%s}\n" % (meta_name, _argument.dest)
+                meta_name = arg_dest
+            meta_str = " %s: {%s}\n" % (meta_name, arg_dest)
         self.meta_args.append(meta_str)
         return _argument
 
@@ -87,6 +91,19 @@ class ArgumentContainerWrapper(object):
         template_strs = ["", *(i for i in template_strs if i)]
         return self.meta_tag.join(template_strs)
 
+    def prepare_values(self, args):
+        formatters = self.meta_formatters.copy()
+        for group in self.meta_groups:
+            formatters.update(group.meta_formatters)
+        values = dict.fromkeys(formatters, "<empty>")
+        for key, value in vars(args).items():
+            formatter = formatters[key]
+            if formatter is not None:
+                values[key] = formatter(value)
+            else:
+                values[key] = value
+        return values
+
 
 class ArgumentParser(ArgumentContainerWrapper):
     """Argument parser class.
@@ -110,7 +127,8 @@ class ArgumentParser(ArgumentContainerWrapper):
     def parse_args(self, argv=None, namespace=None):
         template = self.prepare_template()
         args = self.subj.parse_args(argv, namespace)
-        self.metadata = template.format(**vars(args))
+        values = self.prepare_values(args)
+        self.metadata = template.format(**values)
         return args
 
 
