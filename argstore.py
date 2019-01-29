@@ -73,6 +73,16 @@ class ArgumentContainerWrapper(object):
         self.meta_groups.append(group)
         return group
 
+    def add_mutually_exclusive_group(self, required=False):
+        _group = self.subj.add_mutually_exclusive_group(required=required)
+        group = ArgumentContainerWrapper(
+            _group, meta_tag=self.meta_tag, meta_title=self.meta_title,
+            meta_desc=self.meta_desc, meta_epilog=self.meta_epilog,
+            meta_args=self.meta_args, meta_groups=self.meta_groups,
+            meta_formatters=self.meta_formatters
+        )
+        return group
+
     def _updattr(self, name, value, default=None):
         if value is None:
             try:
