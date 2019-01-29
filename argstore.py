@@ -46,6 +46,9 @@ class ArgumentContainerWrapper(object):
     def add_argument(self, *args, meta_name=None, meta_str=None,
                      meta_formatter=None, **kwargs):
         _argument = self.subj.add_argument(*args, **kwargs)
+        if meta_formatter is None and meta_str is None:
+            if isinstance(_argument.type, FileType):
+                meta_formatter = lambda val: val.name
         arg_dest = _argument.dest
         self.meta_formatters[arg_dest] = meta_formatter
         if meta_str is None:
