@@ -53,7 +53,7 @@ class ArgumentContainerWrapper(object):
         self.meta_formatters[arg_dest] = meta_formatter
         if meta_str is None:
             if meta_name is None:
-                meta_name = arg_dest
+                meta_name = arg_dest.capitalize()
             meta_str = " %s: {%s}\n" % (meta_name, arg_dest)
         self.meta_args.append(meta_str)
         return _argument
