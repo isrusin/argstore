@@ -1,11 +1,12 @@
 #! /usr/bin/env python3
 
 from setuptools import setup
+from argstore import __version__ as version
+
 
 with open("README.md") as readme:
     long_desc = readme.read()
 
-version = "0.1"
 
 setup(
     name="argstore",
