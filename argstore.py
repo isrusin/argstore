@@ -1,11 +1,33 @@
-"""Command-line parsing module with support of argument dumping
+"""Command-line parsing module which eases logging of the execution args.
 
-This is argparse wrapping which keeps execution options and arguments
-and writes them to the output text files.
+This module is an `argparse` wrapper. It simplifies storage of the
+execution args into logs and output text files. This module contains a
+replacement of the original `argparse.ArgumentParser` which has some
+additional variables and methods for preparation of the output message
+stub. This stub is then ready for filling with actual values of the parsed
+CLI arguments through the string formatting mechanism.
+
+The module includes the following public classes:
+
+    - ArgumentContainerWrapper -- a base for argument container wrappers;
+    - ArgumentParser -- a replacement of the `argparse.ArgumentParser`;
+    - ArgumentGroup -- a wrapper for the argument groups.
+
+This module also imports the following classes and variables from the
+`argparse` as is:
+
+    - Action, FileType, Namespace;
+    - ArgumentError, ArgumentTypeError;
+    - ArgumentDefaultsHelpFormatter, HelpFormatter,
+        MetavarTypeHelpFormatter, RawDescriptionHelpFormatter,
+        RawTextHelpFormatter;
+    - ONE_OR_MORE, OPTIONAL, PARSER, REMAINDER, SUPPRESS, ZERO_OR_MORE.
+
+Please, refer to the original `argparse` docstrings for their descriptions.
+
 """
 
 __version__ = "0.1"
-__all__ = [] # filled out later
 
 
 import sys
@@ -21,7 +43,17 @@ from argparse import (Action, ArgumentDefaultsHelpFormatter,
 
 
 class ArgumentContainerWrapper(object):
-    """Root wrapper of the argument containers."""
+    """Root wrapper of the argument containers.
+    
+    Instance variables:
+    
+        - subj -- the wrapper argument container instance.
+        - meta_tag -- a field separator for the output message.
+        - meta_title -- title, the first field of the message.
+        - meta_desc -- description, the second field of the message.
+        - meta_epilog -- epilog, the last filed of the message.
+
+    """
 
     meta_tag = ""
     meta_title = "\n"
