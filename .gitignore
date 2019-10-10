@@ -1,3 +1,6 @@
+.rsync-filter
+TODO
+
 dist/*
 *__pycache__/*
 *.pyc
